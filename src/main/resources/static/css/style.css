@@ -1,0 +1,109 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+	background: url(login-bg.jpg) no-repeat;
+	background-size: cover;
+	font-family: "Montserrat", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	height: 100vh;
+	margin: 0px;
+}
+
+.login-page {
+	width: 600px;
+	padding: 8% 0 0;
+	margin: auto;
+}
+
+.form {
+	position: relative;
+	z-index: 1;
+	background: #FFFFFF;
+	width: 600px;
+	margin: 0 auto;
+	padding: 40px;
+	text-align: left;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+	border-radius: 10px;
+	box-sizing: border-box;
+	background: url(dialog-bg.png) no-repeat;
+}
+
+.form h2 {
+	font-size: 28px;
+	color: #F2F2F2;
+}
+
+.form h4 {
+	color: #F2F2F2;
+}
+
+.form input {
+	outline: 0;
+	background: #f2f2f2;
+	width: 100%;
+	border: 0;
+	margin: 0 0 15px;
+	padding: 15px;
+	box-sizing: border-box;
+	font-size: 14px;
+	border-radius: 10px;
+	font-family: "Montserrat", sans-serif;
+}
+
+.form .button {
+	text-transform: uppercase;
+	outline: 0;
+	background: #5094CA;
+	width: 100%;
+	border: 0;
+	padding: 15px;
+	color: #FFFFFF;
+	font-size: 15px;
+	-webkit-transition: 0.3s ease-in;
+	transition: 0.3s ease-in;
+	cursor: pointer;
+	margin-top: 25px;
+}
+
+.form .button:hover,
+.form .button:active,
+.form .button:focus {
+	background: #236eab;
+}
+
+.form .message {
+	margin: 15px 0 0;
+	color: #b3b3b3;
+	font-size: 12px;
+}
+
+.form .error {
+	color: red;
+	background: #fff;
+	padding: 5px;
+	border-radius: 5px;
+	margin: 5px 0;
+	display: inline-block;
+}
+
+.form h1 {
+	color: #4169E1;
+}
+
+.form .message a {
+	color: #4169E1;
+	text-decoration: none;
+}
+
+.form .links {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.forgot-password-link {
+	text-decoration: none;
+	color: #FFFFFF;
+}
