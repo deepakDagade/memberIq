@@ -1,7 +1,6 @@
 package com.nexoraa.memberiq.entity;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,22 +27,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Scope implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "uuid")
-    private UUID id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(columnDefinition = "uuid")
+	private UUID id;
 
-    @Column
-    private String name;
+	@Column
+	private String name;
 
-    @Column
-    private String description;
+	@Column
+	private String description;
 
-    @JsonIgnore
-    @Builder.Default
-    @ManyToMany(mappedBy = "scopes", fetch = FetchType.LAZY)
-    private Set<Role> roles = new HashSet<>();
+	@JsonIgnore
+	@ManyToMany(mappedBy = "scopes", fetch = FetchType.LAZY)
+	private Set<AppUser> appUsers;
 
 }

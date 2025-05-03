@@ -12,7 +12,7 @@ import com.nexoraa.memberiq.entity.Scope;
 
 @Repository
 public interface ScopeRepository extends JpaRepository<Scope, UUID> {
-	@Query("SELECT s FROM Scope s JOIN s.roles r WHERE r.id IN:roleIds")
-	List<Scope> findByRoleIds(@Param("roleIds") List<UUID> roleIds);
+	@Query("SELECT s FROM Scope s JOIN s.appUsers a WHERE a.id=:appUserId")
+	List<Scope> findByUserId(@Param("appUserId") UUID appUserId);
 
 }

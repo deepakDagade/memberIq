@@ -1,12 +1,10 @@
 package com.nexoraa.memberiq.config;
 
-
-
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,9 +34,11 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.nexoraa.memberiq.entity.AppUser;
-import com.nexoraa.memberiq.entity.Organization;
 import com.nexoraa.memberiq.service.UserService;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -84,7 +84,9 @@ public class SecurityConfig {
 	@Order(1)
 	SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
 		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-		http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
+		http.cors(Customizer.withDefaults())
+				.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(Customizer.withDefaults());
+
 		http.exceptionHandling(e -> e.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
 				.logout(logout -> logout.logoutUrl("/logout"));
 		return http.build();
@@ -94,19 +96,18 @@ public class SecurityConfig {
 	@Order(2)
 	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, EndpointScopeConfig endpointScopeConfig)
 			throws Exception {
-		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(authorize -> {
-			// Allow specific POST requests
-			authorize.requestMatchers(HttpMethod.POST, permitPostUrls).permitAll();
-
-			// Apply endpoint-specific scopes dynamically
+		http.cors(Customizer.withDefaults())
+		    .csrf(csrf -> csrf.disable())
+		    .authorizeHttpRequests(authorize -> {
+			authorize.requestMatchers("/", "/login", "/oauth2/**", "/.well-known/**").permitAll()
+			         .requestMatchers(HttpMethod.POST, permitPostUrls).permitAll();
 			endpointScopeConfig.getEndpointScopes().forEach((endpoint, scopes) -> {
 				authorize.requestMatchers(endpoint).hasAnyAuthority(scopes);
 			});
-
-		}).formLogin(login -> login.loginPage("/login").permitAll() // Custom login page
-		).logout(logout -> logout.logoutSuccessUrl(logoutUrl) // Custom logout success URL
-		).oauth2ResourceServer(
-				oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+		})
+		.formLogin(login -> login.loginPage("/login").permitAll())
+		.logout(logout -> logout.logoutSuccessUrl(logoutUrl))
+		.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
 		return http.build();
 	}
@@ -163,8 +164,7 @@ public class SecurityConfig {
 				// Get user details from repository
 				AppUser user = userService.updateUserLastLogin(principal.getName());
 				// Get Org Id
-				List<UUID> orgIds = user.getOrganizations().stream().map(Organization::getId)
-						.collect(Collectors.toList());
+				UUID orgIds = user.getOrganization().getId();
 				// Add authorities and orgId(s) to the token claims
 				context.getClaims().claim("authorities", authorities).claim("user", principal.getName()).claim("orgId",
 						orgIds);
@@ -172,6 +172,19 @@ public class SecurityConfig {
 			}
 
 		};
+	}
+
+	@Bean
+	public CorsFilter corsFilter() {
+		CorsConfiguration config = new CorsConfiguration();
+		config.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		config.setAllowedHeaders(Arrays.asList("*"));
+		config.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+		return new CorsFilter(source);
 	}
 
 }

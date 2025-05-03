@@ -2,9 +2,11 @@ package com.nexoraa.memberiq.config;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,9 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nexoraa.memberiq.entity.AppUser;
+import com.nexoraa.memberiq.entity.Scope;
 import com.nexoraa.memberiq.enums.Status;
+import com.nexoraa.memberiq.exception.MemberIqException;
 import com.nexoraa.memberiq.repository.ScopeRepository;
 import com.nexoraa.memberiq.repository.UserRepository;
+import com.nexoraa.memberiq.utility.ResponseMessages;
 
 @Service
 public class JpaUserDetailsManager implements UserDetailsManager {
@@ -37,7 +42,15 @@ public class JpaUserDetailsManager implements UserDetailsManager {
 		if (Objects.isNull(userDetails)) {
 			throw new UsernameNotFoundException("Invalid Credentials.");
 		}
+		if(userDetails.getStatus().equals(Status.UNVERIFIED)) {
+			throw new MemberIqException(ResponseMessages.EMAIL_NOT_VERIFIED);
+		}
+		List<Scope> scopes = scopeRepository.findByUserId(userDetails.getId());
+		// Build authorities
 		Collection<GrantedAuthority> authorities = new HashSet<>();
+
+		scopes.forEach(scope -> authorities.add(new SimpleGrantedAuthority(scope.getName()))); // Add scope names
+
 		// Return UserDetails with fetched authorities
 		return new User(userDetails.getEmail(), userDetails.getPassword(),
 				userDetails.getStatus().equals(Status.ACTIVE), true, true, true, authorities);
