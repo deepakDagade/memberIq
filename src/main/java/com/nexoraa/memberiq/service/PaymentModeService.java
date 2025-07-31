@@ -20,4 +20,6 @@ public interface PaymentModeService {
 	List<PaymentMode> findAll();
 
 	void bulkUpdateStatus(StatusDto statusDto);
+
+	 PaymentMode getDefaultPaymentMode();
 }

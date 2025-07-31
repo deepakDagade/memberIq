@@ -29,5 +29,7 @@ public interface UserService {
 	void generatePasswordResetToken(String email, String type);
 
 	void resetPassword(String token, String newPassword);
+	
+	AppUser getUserByEmail(String email);
 
 }

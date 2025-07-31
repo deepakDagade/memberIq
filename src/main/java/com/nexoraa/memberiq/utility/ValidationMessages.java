@@ -44,7 +44,8 @@ public class ValidationMessages {
 	public static final String MIN_COST_REQUIRED = "Minimum cost is required";
 	public static final String MAX_COST_REQUIRED = "Maximum cost is required";
 	public static final String DURATION_REQUIRED = "Duration is required";
-
+	public static final String FEATURES_REQUIRED = "Features are required";
+	
 	// Organization
 	public static final String ORG_NAME_REQUIRED = "Organization name is required";
 	public static final String LOGO_URL_REQUIRED = "Logo URL is required";
@@ -73,5 +74,7 @@ public class ValidationMessages {
 	public static final String START_DATE_NOT_NULL = "Start date must not be null";
 	public static final String END_DATE_NOT_NULL = "End date must not be null";
 	public static final String AUTO_RENEW_NOT_NULL = "Auto renew flag must not be null";
+
+	
 
 }

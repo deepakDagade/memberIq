@@ -104,7 +104,7 @@ public class MembershipTypeController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/bulk-update")
+	@PutMapping("/bulk-update")
 	public ResponseEntity<Response> BulkUpdateStatus(@RequestBody StatusDto statusDto) {
 		Response response = new Response();
 		try {

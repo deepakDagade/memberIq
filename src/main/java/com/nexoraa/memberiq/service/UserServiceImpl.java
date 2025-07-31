@@ -200,5 +200,10 @@ public class UserServiceImpl implements UserService {
 	private boolean isTokenExpired(LocalDateTime tokenExpiry) {
 		return tokenExpiry.isBefore(LocalDateTime.now());
 	}
-	
+	@Override
+    public AppUser getUserByEmail(String email) {
+        AppUser user = userRepository.findByEmailAndIsDeletedFalse(email);
+       
+        return user;
+    }
 }

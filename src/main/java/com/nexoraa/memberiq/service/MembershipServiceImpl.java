@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.nexoraa.memberiq.dto.StatusDto;
 import com.nexoraa.memberiq.entity.Membership;
 import com.nexoraa.memberiq.entity.Organization;
+import com.nexoraa.memberiq.entity.PaymentDetails;
+import com.nexoraa.memberiq.entity.PaymentMode;
 import com.nexoraa.memberiq.enums.Status;
 import com.nexoraa.memberiq.exception.MemberIqException;
 import com.nexoraa.memberiq.repository.MembershipRepository;
@@ -29,9 +31,14 @@ import lombok.extern.slf4j.Slf4j;
 public class MembershipServiceImpl implements MembershipService {
 
 	private final MembershipRepository membershipRepository;
+	private final PaymentDetailsService paymentDetailsService;
+	private final PaymentModeService paymentModeService;
 
-	public MembershipServiceImpl(MembershipRepository membershipRepository) {
+	public MembershipServiceImpl(MembershipRepository membershipRepository, PaymentDetailsService paymentDetailsService,
+			PaymentModeService paymentModeService) {
 		this.membershipRepository = membershipRepository;
+		this.paymentDetailsService = paymentDetailsService;
+		this.paymentModeService = paymentModeService;
 	}
 
 	@Override
@@ -41,7 +48,7 @@ public class MembershipServiceImpl implements MembershipService {
 		membership.setIsDeleted(Boolean.FALSE);
 
 		validateMembership(membership);
-
+		addPaymentDetails(membership);
 		return membershipRepository.save(membership);
 	}
 
@@ -61,7 +68,7 @@ public class MembershipServiceImpl implements MembershipService {
 		membership.setOrganization(organization);
 		Membership existingMembership = validateMembershipExists(membership.getId(), organization.getId());
 		existingMembership = copyFields(existingMembership, membership);
-
+		addPaymentDetails(existingMembership);
 		return membershipRepository.save(existingMembership);
 	}
 
@@ -76,6 +83,21 @@ public class MembershipServiceImpl implements MembershipService {
 		existingMembership.setStatus(membership.getStatus());
 
 		return existingMembership;
+	}
+
+	private void addPaymentDetails(Membership membership) {
+		PaymentDetails paymentDetails = new PaymentDetails();
+
+		paymentDetails.setPaymentAmount(membership.getPaidAmount().doubleValue());
+		paymentDetails.setDate(membership.getStartDate());
+		paymentDetails.setComment(GlobalConstants.MEMBERSHIP_PAYMENT_COMMENT);
+		PaymentMode defaultPaymentMode = paymentModeService.getDefaultPaymentMode();
+		paymentDetails.setPaymentMode(defaultPaymentMode);
+		 paymentDetails.setCollectBy(membership.getMember());
+		paymentDetails.setMember(membership.getMember());
+		paymentDetails.setOrganization(membership.getOrganization());
+		paymentDetails.setIsDeleted(false);
+		paymentDetailsService.save(paymentDetails);
 	}
 
 	private Membership validateMembershipExists(UUID id, UUID organizationId) {

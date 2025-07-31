@@ -34,4 +34,6 @@ public class GlobalConstants {
 	public static final String DISCOUNT = "discount";
 	public static final String TOTAL_AMOUNT = "totaAmmount";
 	public static final String PROFILE_TYPE = "profileType";
+	public static final String MEMBERSHIP_PAYMENT_COMMENT = "Payment from buyer";
+	public static final String MEMBERSHIP_PAYMENT_TYPE = "CASH";
 }

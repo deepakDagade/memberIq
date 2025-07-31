@@ -39,10 +39,9 @@ public class MembershipTypeServiceImpl implements MembershipTypeService {
 		Organization userOrganization = UtilityService.getUserOrganization();
 		membershipType.setOrganization(userOrganization);
 
-		membershipType.setIsDeleted(false);
-
 		validateMembershipTypeName(membershipType.getName(), membershipType.getOrganization().getId());
 
+		membershipType.setIsDeleted(false);
 		return membershipTypeRepository.save(membershipType);
 	}
 

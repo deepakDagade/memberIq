@@ -52,18 +52,15 @@ public class PaymentDetails extends Auditable<String> implements Serializable {
 	@JsonIgnore
 	private Boolean isDeleted;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnore
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "payment_mode_id", nullable = false)
 	private PaymentMode paymentMode;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnore
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "collected_by_id", nullable = false)
 	private Profile collectBy;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnore
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "member_id", nullable = false)
 	private Profile member;
 

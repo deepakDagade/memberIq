@@ -1,6 +1,7 @@
 package com.nexoraa.memberiq.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import com.nexoraa.memberiq.entity.MembershipType;
@@ -30,8 +31,11 @@ public class MembershipTypeDto {
 	@NotNull(message = ValidationMessages.STATUS_REQUIRED)
 	private Status status;
 
+	@NotNull(message = ValidationMessages.FEATURES_REQUIRED)
+	private List<String> features;
+
 	public MembershipType toMembershipType() {
 		return MembershipType.builder().id(id).name(name).minCost(minCost).maxCost(maxCost).duration(duration)
-				.status(status).build();
+				.features(features).status(status).build();
 	}
 }

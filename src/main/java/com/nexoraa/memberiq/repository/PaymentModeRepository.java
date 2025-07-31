@@ -24,4 +24,6 @@ public interface PaymentModeRepository extends JpaRepository<PaymentMode, UUID>,
 
 	List<PaymentMode> findByIdInAndOrganizationIdAndIsDeletedFalse(List<UUID> ids, UUID organizationId);
 
+	PaymentMode findByNameAndIsDeletedFalse(String membershipPaymentType);
+
 }

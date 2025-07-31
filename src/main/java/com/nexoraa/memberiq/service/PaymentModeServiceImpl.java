@@ -136,4 +136,9 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 		}
 
 	}
+
+	@Override
+	public PaymentMode getDefaultPaymentMode() {
+		 return paymentModeRepository.findByNameAndIsDeletedFalse(GlobalConstants.MEMBERSHIP_PAYMENT_TYPE);
+	}
 }
